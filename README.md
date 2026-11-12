@@ -69,6 +69,84 @@ Most production agent tasks:
 
 ---
 
+## 🤖 Using with AI Coding Agents (Antigravity, Claude Code, Cursor)
+
+Task Model Distiller is built from the ground up to be orchestrated directly by AI coding agents. Your frontier assistant acts as the **Teacher, Mutator, and Referee** right inside your terminal or editor workspace without needing external paid generation APIs.
+
+### 1. Google Antigravity IDE (Native Global Skill)
+Install the skill into your global Antigravity configuration:
+```bash
+# Windows
+New-Item -ItemType Directory -Force "$HOME\.gemini\config\skills\task-model-distiller"
+Copy-Item -Recurse * "$HOME\.gemini\config\skills\task-model-distiller\"
+
+# Linux / macOS
+mkdir -p ~/.gemini/config/skills/task-model-distiller
+cp -r * ~/.gemini/config/skills/task-model-distiller/
+```
+Once installed, Antigravity recognizes the skill automatically. In any workspace chat, invoke it directly:
+> *"Use the `task-model-distiller` skill to distill a local 0.5B model for my ticket-triage service."*
+
+Antigravity will inspect your local files, write `.distill/<task>/spec.json`, synthesize multi-turn traces, calibrate the referee, and run fine-tuning in the background.
+
+---
+
+### 2. Anthropic Claude Code (CLI)
+Claude Code executes terminal commands and edits files autonomously. You can register this skill in your project's `CLAUDE.md`:
+
+```markdown
+# Model Distillation Skill
+When asked to distill a small local model or build an SLM tool agent, follow `SKILL.md` in the `task-model-distiller` repository.
+- Use `scripts/validate_traces.py` to verify synthetic data.
+- Use `scripts/mutate_traces.py` and `scripts/referee_stage1.py --calibrate` to test evaluators.
+- Use `scripts/train_cpu_lora.py` for CPU/low-RAM training.
+```
+
+Then run in your terminal:
+```bash
+claude "Initialize a model distillation pipeline for my SQL generator tool using task-model-distiller."
+```
+
+---
+
+### 3. Cursor & Windsurf
+Add a directive to `.cursorrules` or `.windsurfrules`:
+```text
+You have access to the task-model-distiller pipeline. When asked to distill or fine-tune local models (0.5B - 3B), strictly adhere to the 3-pillar protocol in SKILL.md. Keep all generated artifacts isolated inside .distill/<task_name>/.
+```
+
+---
+
+### 4. Universal Agent Prompt Template (Copy & Paste)
+Copy this prompt into any AI agent chat to kick off a distillation task:
+
+```text
+Initialize a new model distillation task named "<your-task-name>" using the task-model-distiller skill.
+
+1. Goal:
+Train a lightweight, low-RAM local model (base: Qwen/Qwen2.5-0.5B-Instruct or Qwen2.5-1.5B-Instruct) to perform <describe the specific, narrow task>.
+
+2. Tools available:
+- <tool_name_1>(param1: type) -> description of return JSON
+- <tool_name_2>(param2: type) -> description of return JSON
+
+3. Persona & Style:
+- <concise, professional, minimal filler>
+
+4. Hard Invariants:
+- Never claim an action succeeded unless the corresponding tool returned status: ok.
+- Never output malformed JSON tool arguments.
+
+Please follow the 5 phases from SKILL.md:
+- Scaffold .distill/<your-task-name>/spec.json and 3 seed traces.
+- Synthesize 50 full-session traces into dataset/train_traces.jsonl and validate with validate_traces.py.
+- Build referee/invariants.json and calibrate with mutate_traces.py and referee_stage1.py.
+- Freeze private benchmarks in scoreboard/benchmark_locked.jsonl and run baseline scoreboard.py.
+- Fine-tune with train_cpu_lora.py --merge and prepare Modelfile for Ollama.
+```
+
+---
+
 ## 📁 Repository Structure
 
 ```text
@@ -105,12 +183,6 @@ Clone and install dependencies:
 git clone https://github.com/Virat-Ghatge/task-model-distiller.git
 cd task-model-distiller
 pip install -r requirements.txt
-```
-
-To install as a global skill inside Google Antigravity IDE:
-```bash
-mkdir -p ~/.gemini/config/skills/task-model-distiller
-cp -r * ~/.gemini/config/skills/task-model-distiller/
 ```
 
 ### 2. The 5-Phase Workflow
