@@ -1,0 +1,24 @@
+{
+  "task": "incident-triager",
+  "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "tools": [
+    {
+      "name": "check_service_health",
+      "description": "Checks status code and CPU load of a service",
+      "parameters": {
+        "service": "string"
+      }
+    },
+    {
+      "name": "page_engineer",
+      "description": "Pages the on-call team for high severity outages",
+      "parameters": {
+        "service": "string",
+        "reason": "string"
+      }
+    }
+  ],
+  "invariants": [
+    "Never claim an engineer was paged unless page_engineer returned success: true."
+  ]
+}

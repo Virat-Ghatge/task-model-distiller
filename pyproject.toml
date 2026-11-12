@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "task-model-distiller"
+version = "0.1.0"
+description = "Distill frontier agent capabilities into small, CPU-friendly local models (0.5B-3B GGUF/Ollama) using synthetic trace generation, adversarial referee calibration, and regression benchmarks."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Virat Ghatge", email = "viratghatge71@gmail.com"}
+]
+keywords = ["llm", "distillation", "lora", "gguf", "ollama", "agents", "antigravity", "ai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "torch>=2.0.0",
+    "transformers>=4.40.0",
+    "datasets>=2.18.0",
+    "peft>=0.10.0",
+    "accelerate>=0.28.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Virat-Ghatge/task-model-distiller"
+Repository = "https://github.com/Virat-Ghatge/task-model-distiller"
